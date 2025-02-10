@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机选择器</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            min-height: 100vh;
+            color: #333;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-top: 20px;
+            color: #4CAF50;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .option-box {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .option-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .error {
+            color: red;
+            font-size: 16px;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>随机选择器</h1>
+        <p>请输入您的选项：</p>
+        <input type="text" id="newOption" placeholder="输入选项并按回车添加">
+        <div class="options-container" id="optionsContainer"></div>
+        <button onclick="randomSelect()">随机选择</button>
+        <div id="result"></div>
+        <div id="error" class="error"></div>
+    </div>
+
+    <script>
+        const optionsContainer = document.getElementById('optionsContainer');
+        const newOptionInput = document.getElementById('newOption');
+        let optionsArray = [];
+
+        // 添加选项到界面和数组中
+        function addOption(optionText) {
+            if (optionText.trim() === '') return;
+
+            const optionBox = document.createElement('div');
+            optionBox.className = 'option-box';
+            optionBox.textContent = optionText;
+
+            // 添加删除按钮
+            const deleteButton = document.createElement('span');
+            deleteButton.innerHTML = '&times;';
+            deleteButton.style.marginLeft = '10px';
+            deleteButton.style.cursor = 'pointer';
+            deleteButton.onclick = () => {
+                optionsArray = optionsArray.filter(option => option !== optionText);
+                optionsContainer.removeChild(optionBox);
+            };
+
+            optionBox.appendChild(deleteButton);
+            optionsContainer.appendChild(optionBox);
+
+            optionsArray.push(optionText);
+            newOptionInput.value = ''; // 清空输入框
+        }
+
+        // 监听输入框的回车事件
+        newOptionInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                addOption(newOptionInput.value);
+            }
+        });
+
+        // 随机选择逻辑
+        function randomSelect() {
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+
+            // 清空错误信息
+            errorDiv.innerHTML = '';
+
+            if (optionsArray.length === 0) {
+                errorDiv.innerHTML = '请至少输入一个选项！';
+                resultDiv.innerHTML = '';
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * optionsArray.length);
+            resultDiv.innerHTML = '推荐选择：' + optionsArray[randomIndex];
+        }
+    </script>
+</body>
+</html>
